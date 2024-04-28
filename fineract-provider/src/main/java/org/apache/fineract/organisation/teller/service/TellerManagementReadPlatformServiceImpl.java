@@ -40,7 +40,6 @@ import org.apache.fineract.organisation.monetary.service.CurrencyReadPlatformSer
 import org.apache.fineract.organisation.office.data.OfficeData;
 import org.apache.fineract.organisation.office.service.OfficeReadPlatformService;
 import org.apache.fineract.organisation.staff.data.StaffData;
-import org.apache.fineract.organisation.staff.exception.StaffNotFoundException;
 import org.apache.fineract.organisation.staff.service.StaffReadPlatformService;
 import org.apache.fineract.organisation.teller.data.CashierData;
 import org.apache.fineract.organisation.teller.data.CashierTransactionData;
@@ -51,6 +50,8 @@ import org.apache.fineract.organisation.teller.data.TellerJournalData;
 import org.apache.fineract.organisation.teller.data.TellerTransactionData;
 import org.apache.fineract.organisation.teller.domain.CashierTxnType;
 import org.apache.fineract.organisation.teller.domain.TellerStatus;
+import org.apache.fineract.organisation.teller.exception.CashierNotFoundException;
+import org.apache.fineract.organisation.teller.exception.TellerNotFoundException;
 import org.apache.fineract.useradministration.domain.AppUser;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -163,7 +164,7 @@ public class TellerManagementReadPlatformServiceImpl implements TellerManagement
 
             return this.jdbcTemplate.queryForObject(sql, tm, new Object[] { tellerId }); // NOSONAR
         } catch (final EmptyResultDataAccessException e) {
-            throw new StaffNotFoundException(tellerId, e);
+            throw new TellerNotFoundException(tellerId, e);
         }
     }
 
@@ -276,7 +277,7 @@ public class TellerManagementReadPlatformServiceImpl implements TellerManagement
 
             return this.jdbcTemplate.queryForObject(sql, cm, new Object[] { cashierId }); // NOSONAR
         } catch (final EmptyResultDataAccessException e) {
-            throw new StaffNotFoundException(cashierId, e);
+            throw new CashierNotFoundException(cashierId, e);
         }
     }
 
@@ -588,7 +589,7 @@ public class TellerManagementReadPlatformServiceImpl implements TellerManagement
             sqlBuilder.append(" left join m_savings_account sav on sav_txn.savings_account_id = sav.id ");
             sqlBuilder.append(" left join m_client cl on sav.client_id = cl.id ");
             sqlBuilder.append(" left join m_office o on cl.office_id = o.id ");
-            sqlBuilder.append(" left join m_appuser user on sav_txn.appuser_id = user.id ");
+            sqlBuilder.append(" left join m_appuser user on sav_txn.created_by = user.id ");
             sqlBuilder.append(" left join m_staff staff on user.staff_id = staff.id ");
             sqlBuilder.append(" left join m_cashiers c on c.staff_id = staff.id ");
             sqlBuilder.append(" left join m_payment_detail payDetails on payDetails.id = sav_txn.payment_detail_id ");
@@ -752,7 +753,7 @@ public class TellerManagementReadPlatformServiceImpl implements TellerManagement
             sqlBuilder.append("    left join m_savings_account sav on sav_txn.savings_account_id = sav.id ");
             sqlBuilder.append("    left join m_client cl on sav.client_id = cl.id ");
             sqlBuilder.append("    left join m_office o on cl.office_id = o.id ");
-            sqlBuilder.append("    left join m_appuser user on sav_txn.appuser_id = user.id ");
+            sqlBuilder.append("    left join m_appuser user on sav_txn.created_by = user.id ");
             sqlBuilder.append("    left join m_staff staff on user.staff_id = staff.id ");
             sqlBuilder.append("    left join m_cashiers c on c.staff_id = staff.id ");
             sqlBuilder.append(" left join m_payment_detail payDetails on payDetails.id = sav_txn.payment_detail_id ");
