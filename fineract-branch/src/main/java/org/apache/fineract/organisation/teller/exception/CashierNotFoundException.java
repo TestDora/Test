@@ -19,6 +19,7 @@
 package org.apache.fineract.organisation.teller.exception;
 
 import org.apache.fineract.infrastructure.core.exception.AbstractPlatformResourceNotFoundException;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 /**
  * Indicates that a cashier could not be found.
@@ -40,4 +41,9 @@ public class CashierNotFoundException extends AbstractPlatformResourceNotFoundEx
     public CashierNotFoundException(Long cashierId) {
         super(ERROR_MESSAGE_CODE, DEFAULT_ERROR_MESSAGE, cashierId);
     }
+
+    public CashierNotFoundException(Long id, EmptyResultDataAccessException e) {
+        super("error.msg.staff.id.invalid", "Staff with identifier " + id + " does not exist", id, e);
+    }
+
 }
