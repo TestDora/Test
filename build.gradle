@@ -19,7 +19,7 @@
 // TODO: this is work in progress, please follow FINERACT-1171
 buildscript {
     ext {
-        jacocoVersion = '0.8.11'
+        jacocoVersion = '0.8.12'
         retrofitVersion = '2.9.0'
         okhttpVersion = '4.9.3'
         oltuVersion = '1.0.1'
@@ -451,7 +451,7 @@ configure(project.fineractJavaProjects) {
     // Configuration for the Checkstyle plugin
     // https://docs.gradle.org/current/userguide/checkstyle_plugin.html
     dependencies {
-        checkstyle 'com.puppycrawl.tools:checkstyle:10.14.2'
+        checkstyle 'com.puppycrawl.tools:checkstyle:10.17.0'
         checkstyle 'com.github.sevntu-checkstyle:sevntu-checks:1.44.1'
     }
 
@@ -473,7 +473,7 @@ configure(project.fineractJavaProjects) {
     // Configuration for the errorprone plugin
     // https://github.com/tbroyer/gradle-errorprone-plugin
     dependencies {
-        errorprone "com.google.errorprone:error_prone_core:2.26.1"
+        errorprone "com.google.errorprone:error_prone_core:2.28.0"
     }
 
     tasks.withType(JavaCompile) {
