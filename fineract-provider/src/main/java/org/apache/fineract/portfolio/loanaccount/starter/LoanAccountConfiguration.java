@@ -18,6 +18,7 @@
  */
 package org.apache.fineract.portfolio.loanaccount.starter;
 
+import jakarta.persistence.EntityManager;
 import org.apache.fineract.accounting.journalentry.service.JournalEntryWritePlatformService;
 import org.apache.fineract.cob.service.LoanAccountLockService;
 import org.apache.fineract.infrastructure.accountnumberformat.domain.AccountNumberFormatRepositoryWrapper;
@@ -231,7 +232,8 @@ public class LoanAccountConfiguration {
 
             RateAssembler rateAssembler, GLIMAccountInfoWritePlatformService glimAccountInfoWritePlatformService,
             GLIMAccountInfoRepository glimRepository, LoanRepository loanRepository, GSIMReadPlatformService gsimReadPlatformService,
-            LoanLifecycleStateMachine defaultLoanLifecycleStateMachine, LoanProductDataValidator loanProductDataValidator) {
+            LoanLifecycleStateMachine defaultLoanLifecycleStateMachine, LoanProductDataValidator loanProductDataValidator,
+            EntityManager entityManager) {
         return new LoanApplicationWritePlatformServiceJpaRepositoryImpl(context, fromJsonHelper, loanApplicationTransitionApiJsonValidator,
                 loanProductCommandFromApiJsonDeserializer, fromApiJsonDeserializer, loanRepositoryWrapper, noteRepository,
                 calculationPlatformService, loanAssembler, clientRepository, loanProductRepository, loanChargeAssembler,
@@ -241,7 +243,8 @@ public class LoanAccountConfiguration {
                 configurationDomainService, loanScheduleAssembler, loanUtilService, calendarReadPlatformService,
                 entityDatatableChecksWritePlatformService, globalConfigurationRepository, entityMappingRepository,
                 fineractEntityRelationRepository, loanProductReadPlatformService, rateAssembler, glimAccountInfoWritePlatformService,
-                glimRepository, loanRepository, gsimReadPlatformService, defaultLoanLifecycleStateMachine, loanProductDataValidator);
+                glimRepository, loanRepository, gsimReadPlatformService, defaultLoanLifecycleStateMachine, loanProductDataValidator,
+                entityManager);
     }
 
     @Bean
@@ -403,7 +406,7 @@ public class LoanAccountConfiguration {
             LoanLifecycleStateMachine defaultLoanLifecycleStateMachine, LoanAccountLockService loanAccountLockService,
             ExternalIdFactory externalIdFactory, ReplayedTransactionBusinessEventService replayedTransactionBusinessEventService,
             LoanAccrualTransactionBusinessEventService loanAccrualTransactionBusinessEventService, ErrorHandler errorHandler,
-            LoanDownPaymentHandlerService loanDownPaymentHandlerService) {
+            LoanDownPaymentHandlerService loanDownPaymentHandlerService, EntityManager entityManager) {
         return new LoanWritePlatformServiceJpaRepositoryImpl(context, loanEventApiJsonValidator, loanUpdateCommandFromApiJsonDeserializer,
                 loanRepositoryWrapper, loanAccountDomainService, noteRepository, loanTransactionRepository,
                 loanTransactionRelationRepository, loanAssembler, journalEntryWritePlatformService, calendarInstanceRepository,
@@ -416,7 +419,7 @@ public class LoanAccountConfiguration {
                 cashierTransactionDataValidator, glimRepository, loanRepository, repaymentWithPostDatedChecksAssembler,
                 postDatedChecksRepository, loanDisbursementDetailsRepository, loanRepaymentScheduleInstallmentRepository,
                 defaultLoanLifecycleStateMachine, loanAccountLockService, externalIdFactory, replayedTransactionBusinessEventService,
-                loanAccrualTransactionBusinessEventService, errorHandler, loanDownPaymentHandlerService);
+                loanAccrualTransactionBusinessEventService, errorHandler, loanDownPaymentHandlerService, entityManager);
     }
 
     @Bean

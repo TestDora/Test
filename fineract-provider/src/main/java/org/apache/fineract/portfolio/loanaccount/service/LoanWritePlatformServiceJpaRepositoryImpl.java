@@ -22,8 +22,10 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.querydsl.jpa.impl.JPAQuery;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.github.resilience4j.retry.annotation.Retry;
+import jakarta.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -111,6 +113,7 @@ import org.apache.fineract.portfolio.account.domain.AccountTransferDetails;
 import org.apache.fineract.portfolio.account.domain.AccountTransferRecurrenceType;
 import org.apache.fineract.portfolio.account.domain.AccountTransferStandingInstruction;
 import org.apache.fineract.portfolio.account.domain.AccountTransferType;
+import org.apache.fineract.portfolio.account.domain.QAccountAssociations;
 import org.apache.fineract.portfolio.account.domain.StandingInstructionPriority;
 import org.apache.fineract.portfolio.account.domain.StandingInstructionStatus;
 import org.apache.fineract.portfolio.account.domain.StandingInstructionType;
@@ -249,6 +252,7 @@ public class LoanWritePlatformServiceJpaRepositoryImpl implements LoanWritePlatf
     private final LoanAccrualTransactionBusinessEventService loanAccrualTransactionBusinessEventService;
     private final ErrorHandler errorHandler;
     private final LoanDownPaymentHandlerService loanDownPaymentHandlerService;
+    private final EntityManager entityManager;
 
     @Transactional
     @Override
@@ -607,8 +611,13 @@ public class LoanWritePlatformServiceJpaRepositoryImpl implements LoanWritePlatf
     private void createStandingInstruction(Loan loan) {
 
         if (loan.shouldCreateStandingInstructionAtDisbursement()) {
-            AccountAssociations accountAssociations = this.accountAssociationRepository.findByLoanIdAndType(loan.getId(),
-                    AccountAssociationType.LINKED_ACCOUNT_ASSOCIATION.getValue());
+            final QAccountAssociations qAccountAssociations = QAccountAssociations.accountAssociations;
+            final JPAQuery<AccountAssociations> query = new JPAQuery<>(entityManager);
+
+            final AccountAssociations accountAssociations = query.select(qAccountAssociations).from(qAccountAssociations)
+                    .where(qAccountAssociations.loanAccount.id.eq(loan.getId())
+                            .and(qAccountAssociations.associationType.eq(AccountAssociationType.LINKED_ACCOUNT_ASSOCIATION.getValue())))
+                    .fetchOne();
 
             if (accountAssociations != null) {
 

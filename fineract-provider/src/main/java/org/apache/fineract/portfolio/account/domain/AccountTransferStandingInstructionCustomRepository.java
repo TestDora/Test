@@ -18,9 +18,9 @@
  */
 package org.apache.fineract.portfolio.account.domain;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.querydsl.QuerydslPredicateExecutor;
+import java.time.LocalDate;
 
-public interface AccountTransferRepository extends JpaRepository<AccountTransferTransaction, Long>,
-        JpaSpecificationExecutor<AccountTransferTransaction>, QuerydslPredicateExecutor<AccountTransferTransaction> {}
+public interface AccountTransferStandingInstructionCustomRepository {
+
+    void updateLastRunDateById(long id, LocalDate lastRunDate);
+}
